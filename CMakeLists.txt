@@ -10,6 +10,11 @@ OPTION(BUILD_STATIC_LIBS "Build static libraries" ON)
 find_package(Boost 1.56 REQUIRED COMPONENTS
              system filesystem)
 
+# third party
+set(INCLUDE_DIRECTORIES
+  third_party/rapidjson/include/
+)
+
 # Set up source files
 set(SOURCES
   src/Module.cpp
