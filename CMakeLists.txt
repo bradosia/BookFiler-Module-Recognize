@@ -116,6 +116,7 @@ if(BUILD_SHARED_LIBS)
   target_include_directories(${lib_shared_name} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+    ${INCLUDE_DIRECTORIES}
   )
   set_target_properties(${lib_shared_name} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS "ON")
   if(UNIX)
@@ -139,6 +140,7 @@ if(BUILD_STATIC_LIBS)
   target_include_directories(${lib_name} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+    ${INCLUDE_DIRECTORIES}
   )
   write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${lib_name}Version.cmake
     VERSION ${PROJECT_VERSION}
