@@ -1,22 +1,26 @@
 cmake_minimum_required(VERSION 3.0)
 
-# The plugin name
-set(lib_base_name RecognizeModule)
+set(lib_base_name BookFiler-Module-Recognize)
+project(${lib_base_name} VERSION 1.0.0 LANGUAGES CXX)
+
+# Configurable Options
+OPTION(BUILD_SHARED_LIBS "Build shared libraries" ON)
+OPTION(BUILD_STATIC_LIBS "Build static libraries" ON)
 
 find_package(Boost 1.56 REQUIRED COMPONENTS
              system filesystem)
 
 # Set up source files
 set(SOURCES
-  Module.cpp
-  core/recognizeModel.cpp
+  src/Module.cpp
+  src/core/recognizeModel.cpp
 )
 
 set(HEADERS
-  Module.hpp
-  Interface.hpp
-  core/config.hpp
-  core/recognizeModel.hpp
+  src/Module.hpp
+  src/Interface.hpp
+  src/core/config.hpp
+  src/core/recognizeModel.hpp
 )
 
 set(SHARED_COMPILE_DEFINITIONS
@@ -142,12 +146,12 @@ if(BUILD_STATIC_LIBS)
 endif()
 
 # Post build
-if(BUILD_SHARED_LIBS)
+if(BUILD_SHARED_LIBS AND PARENT_RELEASE_DIR)
     add_custom_command(TARGET ${lib_shared_name} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/modules/")
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${PARENT_RELEASE_DIR}/modules/")
     add_custom_command(TARGET ${lib_shared_name} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${lib_shared_name}> "${CMAKE_BINARY_DIR}/modules/")
-endif(BUILD_SHARED_LIBS)
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${lib_shared_name}> "${PARENT_RELEASE_DIR}/modules/")
+endif()
 
 # Installation
 if(BUILD_SHARED_LIBS)
@@ -157,7 +161,7 @@ if(BUILD_SHARED_LIBS)
     ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}/${BIN_NAME}/modules"
     LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/${BIN_NAME}/modules"
   )
-endif(BUILD_SHARED_LIBS)
+endif()
 
 if(BUILD_STATIC_LIBS)
   install(TARGETS ${lib_name} EXPORT ${lib_name}_TARGETS
@@ -165,11 +169,10 @@ if(BUILD_STATIC_LIBS)
     ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}/${BIN_NAME}/lib"
     LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/${BIN_NAME}/lib"
   )
-endif(BUILD_STATIC_LIBS)
+endif()
 
 install(FILES ${HEADERS}
   DESTINATION "${CMAKE_INSTALL_PREFIX}/${BIN_NAME}/headers"
 COMPONENT Headers)
 
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${lib_name}_Readme.txt" DESTINATION "${CMAKE_INSTALL_PREFIX}/${BIN_NAME}/doc/")
 install(FILES "${CMAKE_SOURCE_DIR}/LICENSE" DESTINATION "${CMAKE_INSTALL_PREFIX}/${BIN_NAME}/doc/" RENAME "${lib_name}_LICENSE.txt" )
